@@ -1,0 +1,10 @@
+/*
+ * LineLocation.h
+ *
+ *  Created on: 2019. 7. 2.
+ *      Author: DEWH
+ */
+
+struct location{
+	bool mergedLine[160];
+}

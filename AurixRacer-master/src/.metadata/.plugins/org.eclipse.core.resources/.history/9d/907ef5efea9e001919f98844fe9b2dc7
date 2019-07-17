@@ -1,0 +1,27 @@
+#include "../BasicLineScan.h"
+#include "../BasicGtmTom.h"
+#include "ConfigurationIsr.h"
+#include "LinearRegression.h"
+#include "MedianFilter.h"
+
+#define SIGMA_SIZE 		8192
+#define COMPRESSION 	5
+#define LEFTAVG			52
+#define RIGHTAVG		85
+#define LEFTINTERVAL	73
+#define RIGHTINTERVAL	66
+
+
+uint32 histogram_otsu(uint32 * data);
+float64 otsu(uint16 min, uint16 max);
+void LineFiltering();
+void getThreshhold();
+void lineCorrection_init();
+void lineCorrection_run();
+void controlSrv();
+
+#define RIGHTMAXANGLE (-0.15)
+#define LEFTMAXANGLE (-0.95)
+extern uint32 filterResult[2][128];
+extern uint32 medainResult[2][128];
+extern sint32 expect_l, expect_r;

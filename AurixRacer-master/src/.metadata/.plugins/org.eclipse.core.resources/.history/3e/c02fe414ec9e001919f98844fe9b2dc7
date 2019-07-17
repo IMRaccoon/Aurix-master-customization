@@ -1,0 +1,20 @@
+
+#ifndef MOTORCONTROL_H
+#define MOTORCONTROL_H
+
+#include "../BasicGtmTom.h"
+#include "ConfigurationIsr.h"
+
+#define DECELERATION_RATE
+#define ACCELERATION_RATE
+
+void MotorControl_init(float32 dt, float32 max, float32 min, float32 Kp, float32 Kd, float32 Ki);
+void MotorControl_run();
+
+// 'setpoint' is the speed of destination
+// 'pv' is current speed
+float32 MotorControl_calculate(float32 setpoint, float32 pv);
+
+extern float32 MotorControl_speed;
+
+#endif

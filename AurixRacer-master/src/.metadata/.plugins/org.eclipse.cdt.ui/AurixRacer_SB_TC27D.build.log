@@ -1,0 +1,14 @@
+15:20:19 **** Incremental Build of configuration Default for project AurixRacer_SB_TC27D ****
+make all 
+Now Build started !!!
+Building source file MotorControl.c for Tricore
+../../MyApp/AurixRacer/0_Src/AppSw/Tricore/SnsAct/MotorTest/MotorControl.c: In function 'MotorControl_run':
+../../MyApp/AurixRacer/0_Src/AppSw/Tricore/SnsAct/MotorTest/MotorControl.c:21:10: warning: unused variable 'controlAngle' [-Wunused-variable]
+  float32 controlAngle = IR_getSrvAngle();
+          ^
+Building source file AppTaskFu.c for Tricore
+Building output 2_Out/Tricore_Gnuc/AurixRacer_SB_TC27D_Tc.elf
+Building output 2_Out/Tricore_Gnuc/AurixRacer_SB_TC27D_Tc.hex
+
+15:20:39 Build Finished (took 20s.329ms)
+

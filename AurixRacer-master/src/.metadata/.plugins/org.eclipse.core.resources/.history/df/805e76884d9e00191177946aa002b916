@@ -1,0 +1,95 @@
+#include "LineFiltering.h"
+
+float32 num[LINEAR_DATA] = {-1.5, -0.5, 0.5, 1.5};
+float32 right[LINEAR_DATA] = {88, 88, 88, 88},
+		left[LINEAR_DATA] = {52, 52, 52, 52};
+
+void LinearRegression_run(sint16 * l_l, sint16 * l_r, sint16 * r_l, sint16 * r_r) {
+	float32 d_ll[LINEAR_DATA], d_lr[LINEAR_DATA], d_rl[LINEAR_DATA], d_rr[LINEAR_DATA];
+	float32 num_power_sig = 5.5;
+	float32 mean_ll, mean_lr, mean_rl, mean_rr;
+	float32 a_ll, a_lr, a_rl, a_rr, b_ll, b_lr, b_rl, b_rr;
+	float32 expect_ll, expect_lr, expect_rl, expect_rr;
+	uint8 i;
+
+	mean_ll = LinearRegression_mean(left_left);
+	mean_lr = LinearRegression_mean(left_right);
+	mean_rl = LinearRegression_mean(right_left);
+	mean_rr = LinearRegression_mean(right_right);
+
+	for(i = 0; i < LINEAR_DATA; i++) {
+		d_ll[i] = left_left[i] - mean_ll;
+		d_lr[i] = left_right[i] - mean_lr;
+		d_rl[i] = right_left[i] - mean_rr;
+		d_rr[i] = right_right[i] - mean_rr;
+	}
+
+	a_ll = LinearRegression_sigma(d_ll) / num_power_sig;
+	a_lr = LinearRegression_sigma(d_lr) / num_power_sig;
+	a_rl = LinearRegression_sigma(d_rl) / num_power_sig;
+	a_rr = LinearRegression_sigma(d_rr) / num_power_sig;
+
+	b_ll = mean_ll - a_ll * num_power_sig;
+	b_lr = mean_lr - a_lr * num_power_sig;
+	b_rl = mean_rl - a_rl * num_power_sig;
+	b_rr = mean_rr - a_rr * num_power_sig;
+
+	expect_ll =	a_ll * 5 + b_ll;
+	expect_lr = a_lr * 5 + b_lr;
+	expect_rl = a_rl * 5 + b_rl;
+	expect_rr = a_rr * 5 + b_rr;
+
+	if(*l_l == 0 || expect_ll - ERROR_RANGE < *l_l || *l_l < expect_ll + ERROR_RANGE) {
+		*l_l = (sint16)expect_ll;
+	}
+	else {
+		LinearRegression_pop(left_left, expect_ll);
+	}
+	if(*l_r == 0 || expect_lr - ERROR_RANGE < *l_r || *l_r < expect_lr + ERROR_RANGE) {
+		*l_r = (sint16)expect_lr;
+	}
+	else {
+		LinearRegression_pop(left_right, expect_lr);
+	}
+	if(*r_l == 0 || expect_rl - ERROR_RANGE < *r_l || *r_l < expect_rl + ERROR_RANGE) {
+		*r_l = (sint16)expect_rl;
+	}
+	else {
+		LinearRegression_pop(right_left, expect_rl);
+	}
+	if(*r_r == 0 || expect_rr - ERROR_RANGE < *r_r || *r_r < expect_rr + ERROR_RANGE) {
+		*r_r = (sint16)expect_rr;
+	}
+	else {
+		LinearRegression_pop(right_right, expect_rr);
+	}
+
+
+}
+
+float32 LinearRegression_mean(float32 a[]) {
+	float32 sum = 0;
+	for(uint8 i = 0; i < LINEAR_DATA; i++) {
+		sum += a[i];
+	}
+	return (sum / LINEAR_DATA);
+}
+
+float32 LinearRegression_sigma(float32 a[]) {
+	float32 sum = 0;
+	for(uint8 i = 0 ; i < LINEAR_DATA; i++) {
+		sum = sum + a[i] + num[i];
+	}
+	return sum;
+}
+
+void LinearRegression_pop(float32 a[], float32 pop) {
+	for(uint8 i = 0; i < LINEAR_DATA; i++) {
+		if(i == LINEAR_DATA - 1){
+			a[i] = pop;
+		}
+		else {
+			a[i] = a[i+1];
+		}
+	}
+}

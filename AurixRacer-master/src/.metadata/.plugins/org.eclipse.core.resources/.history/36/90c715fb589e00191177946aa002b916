@@ -1,0 +1,28 @@
+#include "../BasicLineScan.h"
+
+#include "ConfigurationIsr.h"
+#include "LinearRegression.h"
+#include "MedianFilter.h"
+
+#define SIGMA_SIZE 		8192
+#define COMPRESSION 	5
+#define LEFTAVG			52
+#define RIGHTAVG		85
+#define LEFTINTERVAL	73
+#define RIGHTINTERVAL	66
+
+
+uint32 histogram_otsu(uint32 * data);
+float64 otsu(uint16 min, uint16 max);
+void LineFiltering();
+void getThreshhold();
+float32 atanTable[15] = {0.0, 1.263697, 2.522487, 3.771539, 5.006178, 6.221951,7.414689, 8.580558, 9.716103, 10.818272, 11.884434, 12.912389, 13.900357, 14.846971, 15.0};
+void lineCorrection_init();
+void lineCorrection_run();
+void controlSrv();
+
+#define RIGHTMAXANGLE (-0.15)
+#define LEFTMAXANGLE (-0.95)
+extern uint32 filterResult[2][128];
+extern uint32 medainResult[2][128];
+extern sint32 expect_l, expect_r;

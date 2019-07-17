@@ -1,0 +1,60 @@
+#include "MotorControl.h"
+
+float32 Motor_dt, Motor_max, Motor_min;
+float32 Motor_Kp, Motor_Kd, Motor_Ki;
+float32 Motor_pre_error = 0, Motor_integral = 0;
+float32 MotorControl_speed;
+float32 prev_Angle = 0;
+
+
+void MotorControl_init(float32 dt, float32 max, float32 min, float32 Kp, float32 Kd, float32 Ki) {
+	IR_setMotor0En(TRUE);
+	dt = Motor_dt;
+	max = Motor_max;
+	min = Motor_min;
+	Kp = Motor_Kp;
+	Kd = Motor_Kd;
+	Ki = Motor_Ki;
+}
+
+void MotorControl_run() {
+	float32 controlAngle = IR_getSrvAngle();
+
+	if(prev_Angle == controlAngle) {
+
+	}
+	else {
+		MotorControl_speed = MotorControl_calculate(0.3, IR_getMotor0Vol());
+	}
+	IR_setMotor0Vol(MotorControl_speed);
+}
+
+float32 MotorControl_calculate(float32 setpoint, float32 pv) {
+	// Calculate error
+	float32 error = setpoint - pv;
+
+	// Proportional term
+	float32 Pout = Motor_Kp * error;
+
+	// Integral term
+	Motor_integral += error * Motor_dt;
+	float32 Iout = Motor_Ki * Motor_integral;
+
+	// Derivative term
+	float32 derivative = (error - Motor_pre_error) / Motor_dt;
+	float32 Dout = Motor_Kd * derivative;
+
+	// Calculate total output
+	float32 output = Pout + Iout + Dout;
+
+	if(output > Motor_max) {
+		output = Motor_max;
+	}
+	else if(output < Motor_min) {
+		output = Motor_min;
+	}
+
+	Motor_pre_error = error;
+
+	return output;
+}

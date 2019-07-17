@@ -1,0 +1,22 @@
+#include "MedianFilter.h"
+
+extern uint32 medianResult[2][128];
+
+void MedianFilter_run(uint32 * rawData, boolean isLeft) {
+	for(int i =0;i<128;i++){
+		int j = i - MEDIAN_INTERVAL >= 0? i - MEDIAN_INTERVAL : 0;
+		medianResult[i] = Median_QuickSort(j, i+MEDIAN_INTERVAL);
+	}
+}
+
+uint32 Median_QuickSort(uint32 * data, int left, int right) {
+	switch(right- left){
+	case MEDIAN_INTERVAL: // 2¿œ∂ß
+		uint32 temp = data[left];
+		break;
+	case MEDIAN_INTERVAL + 1:
+		break;
+	case MEDIAN_INTERVAL + 2:
+		break;
+	}
+}

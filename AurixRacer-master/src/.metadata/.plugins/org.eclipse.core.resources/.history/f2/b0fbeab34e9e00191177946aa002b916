@@ -1,0 +1,9 @@
+#define LINEAR_DATA		4
+#define LINEAR_DATA_AVG 2.5
+#define ERROR_RANGE 	5
+
+float32 LinearRegression_mean(float32 a[]);
+float32 LinearRegression_sigma(float32 a[]);
+void LinearRegression_pop(float32 a[], float32 pop);
+void LinearRegression_run(sint16 * l_l, sint16 * l_r, sint16 * r_l, sint16 * r_r);
+

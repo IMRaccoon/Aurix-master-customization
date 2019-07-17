@@ -1,0 +1,28 @@
+/*
+ * LineFiltering.h
+ *
+ *  Created on: 2019. 6. 27.
+ *      Author: DoHyeon Jeon
+ */
+#include "../BasicLineScan.h"
+#include "ConfigurationIsr.h"
+
+
+#define SIGMA_SIZE 		8192
+#define COMPRESSION 	5
+#define LEFTAVG			52
+#define RIGHTAVG		85
+#define LEFTINTERVAL	73
+#define RIGHTINTERVAL	66
+
+
+
+uint32 histogram_otsu(uint32 * data);
+float64 otsu(uint16 min, uint16 max);
+void LineFiltering();
+void getThreshhold();
+void edgeDetection();
+//void renewLine(sint16 ** edge);
+
+extern sint16 edgeIndex[2][2];
+extern uint32 filterResult[2][128];

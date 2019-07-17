@@ -1,0 +1,8 @@
+#include "../BasicLineScan.h"
+
+#define MEDIAN_INTERVAL_SQUARE		5
+#define MEDIAN_INTERVAL				2
+
+void MedianFilter_run(uint32 * rawData, boolean isLeft);
+void Median_Bubblesort(uint32 * data);
+void Median_QuickSort(uint32 * data, int left, int right);

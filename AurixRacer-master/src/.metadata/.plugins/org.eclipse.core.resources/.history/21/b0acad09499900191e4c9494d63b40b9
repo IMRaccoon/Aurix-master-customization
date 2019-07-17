@@ -1,0 +1,22 @@
+/*
+ * LineFiltering.h
+ *
+ *  Created on: 2019. 6. 27.
+ *      Author: DoHyeon Jeon
+ */
+#include "../BasicLineScan.h"
+#include "ConfigurationIsr.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIGMA_SIZE 4096 * 2
+#define COMPRESSION 3
+
+
+
+uint32 histogram_otsu(uint32 * data);
+float64 otsu(uint16 min, uint16 max);
+void LineFiltering();
+void memcpy2(char * to, char * from, uint32 size);
+
+extern uint32 filterResult[2][128];

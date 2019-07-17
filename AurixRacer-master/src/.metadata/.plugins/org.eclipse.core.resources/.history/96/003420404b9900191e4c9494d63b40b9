@@ -1,0 +1,106 @@
+/*
+ * LineFiltering.c
+ *
+ *  Created on: 2019. 6. 27.
+ *      Author: DoHyeon Jeon
+ */
+
+
+#include "LineFiltering.h"
+
+uint32 filterResult[2][128];
+struct Sigma {
+   float64 sig;
+   uint8 index;
+}sigma[127];
+
+struct cumlHist{
+	float64 sum;
+	uint32 cnt;
+}cumlhist[256];
+
+uint32 hist[256];
+uint32 threshold = 0;
+
+uint32 histogram_otsu(uint32 * data)
+{
+
+   uint16 i, k, t;
+   float64 var_bg;
+   float64 var_fg;
+   /* make histogram */
+   for (k = 0; k < 128; k++) {
+	   uint32 temp = data[k] >> COMPRESSION;
+	   cumlhist[temp].cnt++;
+	   cumlhist[temp].sum += temp;
+	   hist[temp]++;
+   }
+   //calling OTSU
+   for (t = 1; t < 128; t++)
+   {
+	  var_bg = otsu(0, t) ;
+	  var_fg = otsu(t + 1, 128 - 1);
+
+	  sigma[t-1].sig = (var_bg * 0.99 + var_fg * 0.01);
+	  sigma[t-1].index = t;
+   }
+   struct Sigma min = { sigma[0].sig, sigma[0].index };
+   for (i = 0; i < 128 - 1; i++)
+   {
+	   if (min.sig > sigma[i].sig) {
+		   min.sig = sigma[i].sig;
+		   min.index = sigma[i].index;
+	   }
+   }
+
+   return (min.index << COMPRESSION);
+}
+
+
+float64 otsu(uint16 min, uint16 max)
+{
+	j;
+	float64 mean = 0.0, wt_bg, sum = 0.0, mean_bg, var = 0.0, var_bg;
+	float64 varience, sq, diff;
+
+	mean = cumlhist[max].sum - cumlhist[min].sum;
+	sum = cumlhist[max].cnt - cumlhist[min].cnt;
+	if (sum != 0.0)
+	{
+		wt_bg = sum / SIGMA_SIZE;
+		mean_bg = mean / sum;
+		for (j = min; j <= max; j++)
+		{
+		 diff = j - mean_bg;
+		 sq = diff * diff;
+		 var = var + (sq*(hist[j]));
+		}
+		var_bg = var / sum;
+		varience = wt_bg * var_bg*var_bg;
+		return (varience);
+	}
+	else
+		return(0.0);
+}
+
+
+/************Filtering Start Function**************************/
+void getThreshhold(){
+	threshold = histogram_otsu(IR_LineScan.adcResult[0]) + histogram_otsu(IR_LineScan.adcResult[1]);
+	threshold >>= 1;
+}
+void LineFiltering()
+{
+	for(uint8 i =0;i<2;i++) {
+		for(uint8 j =0;j<128;j++){
+			if(IR_LineScan.adcResult[i][j] > threshold) {
+				filterResult[i][j] = 4095;
+			}
+			else {
+				filterResult[i][j] = 0;
+			}
+		}
+	}
+}
+
+

@@ -1,0 +1,85 @@
+#include "LineFiltering.h"
+
+float32 num[LINEAR_DATA] = {-1.5, -0.5, 0.5, 1.5};
+float32 right[LINEAR_DATA] = {88, 88, 88, 88},
+		left[LINEAR_DATA] = {52, 52, 52, 52};
+
+void LinearRegression_run(sint16 * l_l, sint16 * l_r, sint16 * r_l, sint16 * r_r) {
+	float32 d_l[LINEAR_DATA], d_r[LINEAR_DATA];
+	float32 num_power_sig = 5.5;
+	float32 mean_l, mean_r;
+	float32 a_l, a_r, b_l, b_r;
+	float32 expect_l, expect_r;
+	uint8 i;
+
+	mean_l = LinearRegression_mean(left);
+	mean_r = LinearRegression_mean(right);
+
+	for(i = 0; i < LINEAR_DATA; i++) {
+		d_l[i] = left[i] - mean_l;
+		d_r[i] = right[i] - mean_r;
+	}
+
+	a_l = LinearRegression_sigma(d_l) / num_power_sig;
+	a_r = LinearRegression_sigma(d_r) / num_power_sig;
+
+	b_l = mean_l - a_l * num_power_sig;
+	b_r = mean_r - a_r * num_power_sig;
+
+	expect_l =	a_ll * 5 + b_ll;
+	expect_r = a_lr * 5 + b_lr;
+
+	if(*l_l == 0 || expect_ll - ERROR_RANGE < *l_l || *l_l < expect_ll + ERROR_RANGE) {
+		*l_l = (sint16)expect_ll;
+	}
+	else {
+		LinearRegression_pop(left_left, expect_ll);
+	}
+	if(*l_r == 0 || expect_lr - ERROR_RANGE < *l_r || *l_r < expect_lr + ERROR_RANGE) {
+		*l_r = (sint16)expect_lr;
+	}
+	else {
+		LinearRegression_pop(left_right, expect_lr);
+	}
+	if(*r_l == 0 || expect_rl - ERROR_RANGE < *r_l || *r_l < expect_rl + ERROR_RANGE) {
+		*r_l = (sint16)expect_rl;
+	}
+	else {
+		LinearRegression_pop(right_left, expect_rl);
+	}
+	if(*r_r == 0 || expect_rr - ERROR_RANGE < *r_r || *r_r < expect_rr + ERROR_RANGE) {
+		*r_r = (sint16)expect_rr;
+	}
+	else {
+		LinearRegression_pop(right_right, expect_rr);
+	}
+
+
+}
+
+float32 LinearRegression_mean(float32 a[]) {
+	float32 sum = 0;
+	for(uint8 i = 0; i < LINEAR_DATA; i++) {
+		sum += a[i];
+	}
+	return (sum / LINEAR_DATA);
+}
+
+float32 LinearRegression_sigma(float32 a[]) {
+	float32 sum = 0;
+	for(uint8 i = 0 ; i < LINEAR_DATA; i++) {
+		sum = sum + a[i] + num[i];
+	}
+	return sum;
+}
+
+void LinearRegression_pop(float32 a[], float32 pop) {
+	for(uint8 i = 0; i < LINEAR_DATA; i++) {
+		if(i == LINEAR_DATA - 1){
+			a[i] = pop;
+		}
+		else {
+			a[i] = a[i+1];
+		}
+	}
+}
