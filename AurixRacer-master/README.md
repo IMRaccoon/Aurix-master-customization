@@ -11,9 +11,3 @@
 - [AurixTutorial Source Code](https://github.com/realsosy/AurixTutorial/)
 - [AurixTutorial Documentation](http://aurixtutorial.readthedocs.io/ko/latest/) 
 
-## Supporting AURIX Board
-
-- ApplicationKit_TC237
-- ShieldBuddy_TC275D
-
-[![Analytics](https://ga-beacon.appspot.com/UA-137501847-1/AurixRacer/README.md?pixel)](https://github.com/realsosy/aurixracer)
